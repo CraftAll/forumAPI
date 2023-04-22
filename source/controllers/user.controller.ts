@@ -1,17 +1,7 @@
 import { Request, Response } from "express";
-import { Schema, connect, disconnect, model } from "mongoose";
-import { IUser } from "../models/user.model";
+import { connect, disconnect } from "mongoose";
+import { IUser, User } from "../models/user.model";
 import { compare, hash } from "bcryptjs";
-
-const userSchema = new Schema<IUser>({
-  username: { type: String, required: true },
-  email: { type: String, required: true },
-  passwordHash: { type: String, required: true },
-  firstName: { type: String },
-  lastName: { type: String },
-});
-
-const User = model<IUser>("User", userSchema);
 
 export const signup = async (req: Request, res: Response) => {
   if (!req.body.email || !req.body.username || !req.body.password) {
