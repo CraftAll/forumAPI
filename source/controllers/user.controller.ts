@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Schema, connect, model } from "mongoose";
+import { Schema, connect, disconnect, model } from "mongoose";
 import { IUser } from "../models/user.model";
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 
 const userSchema = new Schema<IUser>({
   username: { type: String, required: true },
@@ -12,7 +12,12 @@ const userSchema = new Schema<IUser>({
 });
 
 const User = model<IUser>("User", userSchema);
-export const singup = async (req: Request, res: Response) => {
+
+export const signup = async (req: Request, res: Response) => {
+  if (!req.body.email || !req.body.username || !req.body.password) {
+    res.sendStatus(400);
+    return;
+  }
   const user = new User({
     email: req.body.email,
     passwordHash: await hash(req.body.password, 10),
@@ -21,6 +26,21 @@ export const singup = async (req: Request, res: Response) => {
     username: req.body.username,
   });
   await connect("mongodb://127.0.0.1:27017/forumAPI");
-  await user.save();
-  res.sendStatus(200);
+  if (await user.save()) {
+    res.sendStatus(200);
+    disconnect();
+  }
+};
+
+export const signin = async (req: Request, res: Response) => {
+  await connect("mongodb://127.0.0.1:27017/forumAPI");
+  const user = await User.findOne<IUser>({
+    $or: [{ username: req.body.login }, { email: req.body.login }],
+  }).exec();
+  if (user)
+    if (await compare(req.body.password, user.passwordHash)) {
+      res.send(user);
+      return;
+    }
+  res.sendStatus(401);
 };
