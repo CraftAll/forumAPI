@@ -22,5 +22,8 @@
   },
   "author": "CraftAll",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "@types/cors": "^2.8.13"
+  }
 }
