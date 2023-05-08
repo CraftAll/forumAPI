@@ -1,14 +1,15 @@
 import { Router } from "express";
 import {
-  create,
-  get,
+  createComment,
+  createPost,
+  deleteComment,
   getAll,
-  getFromAuthor,
+  getPost,
 } from "../controllers/post.controller";
 
 export const postRouter = Router();
-
-postRouter.post("/create", create);
-postRouter.get("/", getAll);
-postRouter.get("/formAuthor", getFromAuthor);
-postRouter.get("/:title", get);
+postRouter.get("/all", getAll);
+postRouter.post("/create", createPost);
+postRouter.get("/:id", getPost);
+postRouter.post("/:id/comment", createComment);
+postRouter.delete("/:id/comment/:commentId", deleteComment);

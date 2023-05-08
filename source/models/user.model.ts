@@ -1,19 +1,18 @@
-import { Schema, model } from "mongoose";
+import { InferSchemaType, Schema, model } from "mongoose";
 
-export interface IUser {
-  email: string;
-  username: string;
-  passwordHash: string;
-  firstName: string;
-  lastName: string;
-}
-
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true },
-  passwordHash: { type: String, required: true },
+  email: {
+    type: String,
+    required: true,
+    validate: { validator: (v: string) => /.+@.+\..+/.test(v) },
+  },
+  password: { type: String, required: true },
   firstName: { type: String },
   lastName: { type: String },
+  bio: { type: String },
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
-
-export const User = model<IUser>("User", userSchema);
+export type User = InferSchemaType<typeof userSchema>;
+export const UserModel = model("User", userSchema);

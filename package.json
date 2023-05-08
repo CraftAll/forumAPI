@@ -18,7 +18,7 @@
   "main": "source/server.ts",
   "scripts": {
     "dev": "nodemon source/server.ts",
-    "build": "rm -rf build/ && prettier --write source/ && tsc"
+    "build": "prettier --write source/ && tsc"
   },
   "author": "CraftAll",
   "license": "ISC",
